@@ -59,7 +59,8 @@
 <h2>Request a Consultation</h2>
 <p>Tell us about your optical design, laser system, Zemax modeling, or photonics project.</p>
 
-<form name="consultation-request" method="POST" data-netlify="true" netlify-honeypot="bot-field" action="/thank-you.html" accept-charset="UTF-8">
+<div id="form-success" class="success-message" style="display:none;">Thank you. Your consultation request has been submitted successfully.</div>
+<form name="consultation-request" method="POST" data-netlify="true" netlify-honeypot="bot-field" action="/thank-you.html">
 <input type="hidden" name="form-name" value="consultation-request">
 <p class="hidden"><label>Do not fill this out if you are human: <input name="bot-field"></label></p>
 
@@ -136,4 +137,17 @@
 </div></section>
 </main>
 <footer><div class="container">© 2026 JZ Photonics. Optical Systems & Laser Consulting.</div></footer>
+
+<script>
+(function () {
+  var params = new URLSearchParams(window.location.search);
+  if (params.get('submitted') === 'true') {
+    var box = document.getElementById('form-success');
+    if (box) box.style.display = 'block';
+    if (window.history && window.history.replaceState) {
+      window.history.replaceState({}, document.title, window.location.pathname + '#consultation');
+    }
+  }
+})();
+</script>
 </body></html>

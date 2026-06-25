@@ -1,18 +1,14 @@
-JZ Photonics V10 Netlify Form Fix
+JZPHOTONICS V11 NETLIFY FORM FIX
 
-What was fixed:
-1. The contact form action points to /thank-you.html.
-2. thank-you.html exists at the root level next to index.html.
-3. A duplicate thank-you/index.html was added so /thank-you/ also works.
-4. _redirects and netlify.toml were added for safe Netlify routing.
-5. Publish directory is explicitly set to the repository root: .
+This version avoids the 404 error by changing the Netlify form success action to the home page:
 
-Important Netlify step:
-After deploy, open Netlify dashboard:
-Site configuration > Forms > Form notifications
-Add email notification to: zarrabi52@gmail.com
+  action="/?submitted=true#consultation"
 
-If Netlify still shows 404, check:
-Site configuration > Build & deploy > Publish directory
-It must point to the folder containing index.html and thank-you.html.
-For this package, publish directory should be: .
+That means the form no longer depends on Netlify locating thank-you.html after the POST.
+A success message appears at the form after submission.
+
+Important GitHub/Netlify setup:
+1. Upload the CONTENTS of this folder to the root of the GitHub repository.
+2. In Netlify, set Publish directory to: .
+3. Do not set Publish directory to a subfolder unless that subfolder contains index.html.
+4. In Netlify Dashboard > Forms, enable email notifications to zarrabi52@gmail.com.
