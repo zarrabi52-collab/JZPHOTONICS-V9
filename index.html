@@ -60,7 +60,8 @@
 <p>Tell us about your optical design, laser system, Zemax modeling, or photonics project.</p>
 
 <div id="form-success" class="success-message" style="display:none;">Thank you. Your consultation request has been submitted successfully.</div>
-<form name="consultation-request" method="POST" data-netlify="true" netlify-honeypot="bot-field" action="/thank-you.html">
+<div id="form-error" class="error-message" style="display:none;">Sorry, the form could not be submitted. Please email Joseph directly at <a href="mailto:zarrabi52@gmail.com">zarrabi52@gmail.com</a>.</div>
+<form name="consultation-request" method="POST" data-netlify="true" netlify netlify-honeypot="bot-field" action="/" id="consultation-form">
 <input type="hidden" name="form-name" value="consultation-request">
 <p class="hidden"><label>Do not fill this out if you are human: <input name="bot-field"></label></p>
 
@@ -140,14 +141,45 @@
 
 <script>
 (function () {
-  var params = new URLSearchParams(window.location.search);
-  if (params.get('submitted') === 'true') {
-    var box = document.getElementById('form-success');
-    if (box) box.style.display = 'block';
-    if (window.history && window.history.replaceState) {
-      window.history.replaceState({}, document.title, window.location.pathname + '#consultation');
-    }
+  var form = document.getElementById('consultation-form');
+  if (!form) return;
+
+  function encode(data) {
+    return Object.keys(data)
+      .map(function (key) {
+        return encodeURIComponent(key) + '=' + encodeURIComponent(data[key]);
+      })
+      .join('&');
   }
+
+  form.addEventListener('submit', function (event) {
+    event.preventDefault();
+
+    var successBox = document.getElementById('form-success');
+    var errorBox = document.getElementById('form-error');
+    if (successBox) successBox.style.display = 'none';
+    if (errorBox) errorBox.style.display = 'none';
+
+    var formData = new FormData(form);
+    var data = {};
+    formData.forEach(function (value, key) { data[key] = value; });
+    data['form-name'] = form.getAttribute('name');
+
+    fetch('/', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: encode(data)
+    })
+    .then(function (response) {
+      if (!response.ok) throw new Error('Network response was not ok');
+      form.reset();
+      if (successBox) successBox.style.display = 'block';
+      window.location.hash = 'consultation';
+    })
+    .catch(function () {
+      if (errorBox) errorBox.style.display = 'block';
+    });
+  });
 })();
 </script>
 </body></html>
